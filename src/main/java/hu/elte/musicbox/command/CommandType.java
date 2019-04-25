@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 public enum CommandType {
     ADD("add"),
-    ADDLYRICS("addlyrics"),
+    ADD_LYRICS("addlyrics"),
     PLAY("play"),
     CHANGE("change"),
     STOP("stop");
@@ -18,9 +18,9 @@ public enum CommandType {
     public static CommandType getTypeByName(final String commandName) {
         return EnumSet.allOf(CommandType.class)
             .stream()
-            .filter(commandType -> commandType.commandName.equals(commandName))
+            .filter(type -> type.commandName.equals(commandName))
             .findFirst()
-            .get();
+            .orElse(null);
     }
 
     public String getCommandName() {
