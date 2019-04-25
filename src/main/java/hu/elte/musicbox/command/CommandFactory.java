@@ -2,6 +2,7 @@ package hu.elte.musicbox.command;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import hu.elte.musicbox.song.LyricsTransformer;
 import hu.elte.musicbox.song.Song;
@@ -12,16 +13,18 @@ public class CommandFactory {
     private static final String CLIENT_INPUT_SEPARATOR = " ";
     private final SongTransformer songTransformer;
     private final LyricsTransformer lyricsTransformer;
+    private final AtomicLong songId;
 
     private CommandFactory(final SongTransformer songTransformer,
-        final LyricsTransformer lyricsTransformer) {
+        final LyricsTransformer lyricsTransformer, final AtomicLong songId) {
         this.songTransformer = songTransformer;
         this.lyricsTransformer = lyricsTransformer;
+        this.songId = songId;
     }
 
     public static CommandFactory createCommandFactory(final SongTransformer songTransformer,
-        final LyricsTransformer lyricsTransformer) {
-        return new CommandFactory(songTransformer, lyricsTransformer);
+        final LyricsTransformer lyricsTransformer, final AtomicLong songId) {
+        return new CommandFactory(songTransformer, lyricsTransformer, songId);
     }
 
     public boolean isReady(final List<String> clientInput) {
@@ -43,7 +46,8 @@ public class CommandFactory {
             firstWord.length() == commandType.getCommandName().length();
     }
 
-    public Command createCommand(final List<String> clientInput, final ConcurrentMap<String, Song> songStore) {
+    public Command createCommand(final List<String> clientInput, final ConcurrentMap<String, Song> songStore,
+        final ConcurrentMap<String, Song> playList) {
         final String firstLine = clientInput.get(0);
         final String[] commandArguments = firstLine.split(CLIENT_INPUT_SEPARATOR);
         final CommandType commandType = CommandType.getTypeByName(commandArguments[0]);
@@ -54,8 +58,7 @@ public class CommandFactory {
         } else if (commandType.equals(CommandType.ADD_LYRICS)) {
             command = new AddLyricsCommand(commandArguments[1], clientInput.get(1), lyricsTransformer, songStore);
         } else if (commandType.equals(CommandType.PLAY)) {
-            // TODO
-            System.out.println(CommandType.PLAY);
+            command = new PlayCommand(commandArguments, songStore, playList, songId.incrementAndGet(), songTransformer);
         } else if (commandType.equals(CommandType.CHANGE)) {
             // TODO
             System.out.println(CommandType.CHANGE);

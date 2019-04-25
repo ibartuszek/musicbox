@@ -15,15 +15,16 @@ import hu.elte.musicbox.song.SongTransformer;
 
 public class AddSongCommandTest {
 
-    public static final String ADD = "add";
-    public static final String SPACE = " ";
-    public static final String SONG_TITLE = "song";
-    public static final Long FIRST_SONG_ID = 0L;
+    private static final String ADD = "add";
+    private static final String SPACE = " ";
+    private static final String SONG_TITLE = "song";
+    private static final Long FIRST_SONG_ID = 0L;
     private final SongTransformer songTransformer = SongTransformer.createSongTransformer();
-    private final CommandFactory commandFactory = CommandFactory.createCommandFactory(songTransformer, null);
-    private AddSongCommand underTest;
+    private final CommandFactory commandFactory = CommandFactory.createCommandFactory(songTransformer, null, null);
     private List<String> clientInput;
     private ConcurrentMap<String, Song> songStore;
+
+    private AddSongCommand underTest;
 
     @BeforeMethod
     public void setUp() {
@@ -33,30 +34,32 @@ public class AddSongCommandTest {
     }
 
     @Test
-    public void testShouldReturnBasicSongWhenInputIsBasicSongWithRepeat() {
+    public void testExecuteShouldReturnBasicSongWhenInputIsBasicSongWithRepeat() {
         // GIVEN
         clientInput.add("C 4 E 4 C 4 E 4 G 8 G 8 REP 6;1 C/1 4 B 4 A 4 G 4 F 8 A 8 G 4 F 4 E 4 D 4 C 8 C 8");
-        underTest = (AddSongCommand) commandFactory.createCommand(clientInput, songStore);
+        underTest = (AddSongCommand) commandFactory.createCommand(clientInput, songStore, null);
         // WHEN
-        Song result = underTest.execute();
+        Result result = underTest.execute();
         // THEN
-        Assert.assertEquals(result.getTitle(), SONG_TITLE);
-        Assert.assertEquals(result.getId(), FIRST_SONG_ID);
-        Assert.assertEquals(result.getSongData().size(), 24);
+        Assert.assertEquals(result.getSong().getTitle(), SONG_TITLE);
+        Assert.assertEquals(result.getSong().getId(), FIRST_SONG_ID);
+        Assert.assertEquals(result.getSong().getSongData().size(), 24);
+        Assert.assertNull(result.getMessage());
     }
 
     @Test
-    public void testShouldReturnWithNewSongWhenInputIsAnExistingSong() {
+    public void testExecuteShouldReturnWithNewSongWhenInputIsAnExistingSong() {
         // GIVEN
         songStore.put(SONG_TITLE, createSong());
         clientInput.add("C 4 E 4");
-        underTest = (AddSongCommand) commandFactory.createCommand(clientInput, songStore);
+        underTest = (AddSongCommand) commandFactory.createCommand(clientInput, songStore, null);
         // WHEN
-        Song result = underTest.execute();
+        Result result = underTest.execute();
         // THEN
-        Assert.assertEquals(result.getTitle(), SONG_TITLE);
-        Assert.assertEquals(result.getId(), FIRST_SONG_ID);
-        Assert.assertEquals(result.getSongData().size(), 2);
+        Assert.assertEquals(result.getSong().getTitle(), SONG_TITLE);
+        Assert.assertEquals(result.getSong().getId(), FIRST_SONG_ID);
+        Assert.assertEquals(result.getSong().getSongData().size(), 2);
+        Assert.assertNull(result.getMessage());
     }
 
     private Song createSong() {

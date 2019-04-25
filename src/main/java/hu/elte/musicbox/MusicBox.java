@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import hu.elte.musicbox.command.CommandFactory;
 import hu.elte.musicbox.song.LyricsTransformer;
@@ -19,11 +20,13 @@ public class MusicBox {
 
     public static void main(final String[] args) throws Exception {
 
+        AtomicLong songId = new AtomicLong();
         Set<ClientData> otherClients = new HashSet<>();
         ConcurrentMap<String, Song> songStore = new ConcurrentHashMap<>();
+        ConcurrentMap<String, Song> playList = new ConcurrentHashMap<>();
         SongTransformer songTransformer = SongTransformer.createSongTransformer();
         LyricsTransformer lyricsTransformer = LyricsTransformer.createLyricsTransformer();
-        CommandFactory commandFactory = CommandFactory.createCommandFactory(songTransformer, lyricsTransformer);
+        CommandFactory commandFactory = CommandFactory.createCommandFactory(songTransformer, lyricsTransformer, songId);
 
         try (final ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {
@@ -47,7 +50,7 @@ public class MusicBox {
                         }
 
                         if (commandFactory.isReady(clientInput)) {
-                            commandFactory.createCommand(clientInput, songStore).execute();
+                            commandFactory.createCommand(clientInput, songStore, playList).execute();
                         }
                     }
 

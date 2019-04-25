@@ -13,8 +13,9 @@ import java.util.Map;
  */
 public class SongTransformer {
 
+    public static final int TIME_BEAT_CONSTANT = 8;
     private static final String RAW_SONG_SEPARATOR = " ";
-    private static final String END_SONG = "FIN";
+    private static final String END_SONG = "END_SONG";
     private static final String REPEAT = "REP";
     private static final String REPEAT_SEPARATOR = ";";
     private static final String PAUSE = "R";
@@ -22,7 +23,6 @@ public class SongTransformer {
     private static final Character NOTE_MODIFIER_TO_LOWER = 'b';
     private static final String OCTAVE_SEPARATOR = "/";
     private static final int OCTAVE_SHIFT = 12;
-
     private final Map<Character, Integer> noteCodeTable;
 
     private SongTransformer() {
@@ -63,7 +63,7 @@ public class SongTransformer {
         }
     }
 
-    private void addEndToSong(List<Note> songData) {
+    private void addEndToSong(final List<Note> songData) {
         songData.add(Note.createNote(null, null, END_SONG));
     }
 
@@ -77,7 +77,7 @@ public class SongTransformer {
         songData.add(note);
     }
 
-    private Note transformToNote(String noteElement, Integer tempo) {
+    private Note transformToNote(final String noteElement, final Integer tempo) {
         String[] elements = noteElement.split(OCTAVE_SEPARATOR);
         Character aimNote = elements[0].charAt(0);
         int targetValue = noteCodeTable.get(aimNote);
@@ -85,7 +85,7 @@ public class SongTransformer {
         return Note.createNote(targetValue + modifier, tempo, noteElement);
     }
 
-    private int createNoteModifiers(String[] elements) {
+    private int createNoteModifiers(final String[] elements) {
         int noteModifier = 0;
         Character modifier = elements[0].length() > 1 ? elements[0].charAt(1) : null;
         if (NOTE_MODIFIER_TO_UPPER.equals(modifier)) {
@@ -102,6 +102,17 @@ public class SongTransformer {
         for (int i = 0; i < multiplication; i++) {
             songData.addAll(repeatedPart);
         }
+    }
+
+    public void modifySong(final List<Note> rawSongData, final List<Note> newSongData,
+        final int tempo, final int noteModifierFactor) {
+        rawSongData.forEach(note -> newSongData.add(transformNote(note, tempo, noteModifierFactor)));
+    }
+
+    private Note transformNote(Note note, int tempo, int noteModifierFactor) {
+        int newBeat = note.getBeat() * tempo / TIME_BEAT_CONSTANT;
+        int newNoteValue = note.getNoteValue() + noteModifierFactor;
+        return Note.createNote(newNoteValue, newBeat, note.getNote());
     }
 
 }

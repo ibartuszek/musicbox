@@ -23,13 +23,13 @@ public class AddLyricsCommand implements Command {
     }
 
     @Override
-    public Song execute() {
+    public Result execute() {
         Song song = null;
         if (songStore.containsKey(title)) {
             song = songStore.get(title);
             song.getLyricsData().clear();
             lyricsTransformer.fillLyricsDataFromRawData(song, rawLyrics);
         }
-        return song;
+        return Result.createResult(song, null);
     }
 }

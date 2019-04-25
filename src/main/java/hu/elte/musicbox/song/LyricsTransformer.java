@@ -7,7 +7,7 @@ import java.util.List;
 public class LyricsTransformer {
 
     private static final String LYRICS_SEPARATOR = " ";
-    private static final String END_SONG = "FIN";
+    private static final String END_SONG = "END_SONG";
     private static final String REPEAT = "REP";
     private static final String REPEAT_SEPARATOR = ";";
     private static final String PAUSE = "R";

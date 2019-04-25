@@ -23,7 +23,7 @@ public class AddSongCommand implements Command {
     }
 
     @Override
-    public Song execute() {
+    public Result execute() {
         Song song;
         if (songStore.containsKey(title)) {
             song = songStore.get(title);
@@ -35,7 +35,7 @@ public class AddSongCommand implements Command {
             }
         }
         songTransformer.fillSongDataFromRawData(song.getSongData(), rawSong);
-        return song;
+        return Result.createResult(song, null);
     }
 
 }
