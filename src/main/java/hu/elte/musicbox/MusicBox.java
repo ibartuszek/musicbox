@@ -23,7 +23,7 @@ public class MusicBox {
         AtomicLong songId = new AtomicLong();
         Set<ClientData> otherClients = new HashSet<>();
         ConcurrentMap<String, Song> songStore = new ConcurrentHashMap<>();
-        ConcurrentMap<String, Song> playList = new ConcurrentHashMap<>();
+        ConcurrentMap<Long, Song> playList = new ConcurrentHashMap<>();
         SongTransformer songTransformer = SongTransformer.createSongTransformer();
         LyricsTransformer lyricsTransformer = LyricsTransformer.createLyricsTransformer();
         CommandFactory commandFactory = CommandFactory.createCommandFactory(songTransformer, lyricsTransformer, songId);

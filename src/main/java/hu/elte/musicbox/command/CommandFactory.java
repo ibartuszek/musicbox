@@ -47,7 +47,7 @@ public class CommandFactory {
     }
 
     public Command createCommand(final List<String> clientInput, final ConcurrentMap<String, Song> songStore,
-        final ConcurrentMap<String, Song> playList) {
+        final ConcurrentMap<Long, Song> playList) {
         final String firstLine = clientInput.get(0);
         final String[] commandArguments = firstLine.split(CLIENT_INPUT_SEPARATOR);
         final CommandType commandType = CommandType.getTypeByName(commandArguments[0]);
@@ -60,8 +60,7 @@ public class CommandFactory {
         } else if (commandType.equals(CommandType.PLAY)) {
             command = new PlayCommand(commandArguments, songStore, playList, songId.incrementAndGet(), songTransformer);
         } else if (commandType.equals(CommandType.CHANGE)) {
-            // TODO
-            System.out.println(CommandType.CHANGE);
+            command = new ChangeCommand(commandArguments, playList, songTransformer);
         } else if (commandType.equals(CommandType.STOP)) {
             // TODO
             System.out.println(CommandType.STOP);

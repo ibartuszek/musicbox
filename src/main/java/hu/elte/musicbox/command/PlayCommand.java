@@ -16,12 +16,11 @@ public class PlayCommand implements Command {
     private final String title;
     private final Long songId;
     private final ConcurrentMap<String, Song> songStore;
-    private final ConcurrentMap<String, Song> playList;
+    private final ConcurrentMap<Long, Song> playList;
     private final SongTransformer songTransformer;
 
     PlayCommand(final String[] arguments, final ConcurrentMap<String, Song> songStore,
-        ConcurrentMap<String, Song> playList, final Long songId,
-        final SongTransformer songTransformer) {
+        final ConcurrentMap<Long, Song> playList, final Long songId, final SongTransformer songTransformer) {
         this.commandType = CommandType.PLAY;
         this.tempo = Integer.parseInt(arguments[1]);
         this.noteModifierFactor = Integer.parseInt(arguments[2]);
@@ -42,8 +41,9 @@ public class PlayCommand implements Command {
         } else {
             Song rawSong = songStore.get(title);
             song = Song.createSong(songId, title);
-            songTransformer.modifySong(rawSong.getSongData(), song.getSongData(), tempo, noteModifierFactor);
-            playList.put(song.getTitle(), song);
+            song.getSongData().addAll(rawSong.getSongData());
+            songTransformer.updateSongData(song.getSongData(), tempo, noteModifierFactor);
+            playList.put(songId, song);
             message = MessageFormat.format(RESULT_MESSAGE, songId);
         }
         return Result.createResult(song, message);

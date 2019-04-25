@@ -27,7 +27,7 @@ public class PlayCommandTest {
     private final List<String> clientInput = new ArrayList<>();
     private CommandFactory commandFactory;
     private ConcurrentMap<String, Song> songStore;
-    private ConcurrentMap<String, Song> playList;
+    private ConcurrentMap<Long, Song> playList;
     private Song song;
     private Song transformattedSong;
     private PlayCommand underTest;

@@ -104,9 +104,13 @@ public class SongTransformer {
         }
     }
 
-    public void modifySong(final List<Note> rawSongData, final List<Note> newSongData,
-        final int tempo, final int noteModifierFactor) {
-        rawSongData.forEach(note -> newSongData.add(transformNote(note, tempo, noteModifierFactor)));
+    public void updateSongData(final List<Note> newSongData, final int tempo, final int noteModifierFactor) {
+        newSongData.forEach(note -> replaceNote(newSongData, note, tempo, noteModifierFactor));
+    }
+
+    private void replaceNote(List<Note> newSongData, Note note, int tempo, int noteModifierFactor) {
+        newSongData.remove(note);
+        newSongData.add(transformNote(note, tempo, noteModifierFactor));
     }
 
     private Note transformNote(Note note, int tempo, int noteModifierFactor) {
