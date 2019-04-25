@@ -45,7 +45,7 @@ public class SongTransformer {
         return noteCodeTable;
     }
 
-    public void transformToSong(final List<Note> songData, final String rawSong) {
+    public void fillSongDataFromRawData(final List<Note> songData, final String rawSong) {
         boolean finished = false;
         List<String> songElements = Arrays.asList(rawSong.split(RAW_SONG_SEPARATOR));
         Iterator<String> iterator = songElements.iterator();
@@ -53,6 +53,7 @@ public class SongTransformer {
             String nextNote = iterator.next();
             if (END_SONG.equals(nextNote)) {
                 finished = true;
+                addEndToSong(songData);
             } else if (REPEAT.equals(nextNote)) {
                 String[] repeatArguments = iterator.next().split(REPEAT_SEPARATOR);
                 repeat(songData, Integer.parseInt(repeatArguments[0]), Integer.parseInt(repeatArguments[1]));
@@ -62,10 +63,14 @@ public class SongTransformer {
         }
     }
 
+    private void addEndToSong(List<Note> songData) {
+        songData.add(Note.createNote(null, null, END_SONG));
+    }
+
     private void addNoteToSong(final List<Note> songData, final String noteElement, final Integer tempo) {
         Note note;
         if (PAUSE.equals(noteElement)) {
-            note = Note.createNote(null, tempo, noteElement);
+            note = Note.createNote(null, tempo, PAUSE);
         } else {
             note = transformToNote(noteElement, tempo);
         }

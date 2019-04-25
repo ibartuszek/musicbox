@@ -24,18 +24,17 @@ public class AddSongCommand implements Command {
 
     @Override
     public Song execute() {
-        final Song song;
-
+        Song song;
         if (songStore.containsKey(title)) {
             song = songStore.get(title);
             song.getSongData().clear();
         } else {
             synchronized (songStore) {
-                song = Song.createSong(title, (long) songStore.size());
+                song = Song.createSong((long) songStore.size(), title);
                 songStore.put(song.getTitle(), song);
             }
         }
-        songTransformer.transformToSong(song.getSongData(), rawSong);
+        songTransformer.fillSongDataFromRawData(song.getSongData(), rawSong);
         return song;
     }
 

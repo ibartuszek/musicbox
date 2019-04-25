@@ -18,11 +18,11 @@ public class SongTransformerTest {
     }
 
     @Test
-    public void testTransformToSongWhenSongIsOnePause() {
+    public void testFillSongDataFromRawDataWhenSongIsOnePause() {
         //GIVEN
         String rawSong = "R 4";
         // WHEN
-        underTest.transformToSong(songData, rawSong);
+        underTest.fillSongDataFromRawData(songData, rawSong);
         // THEN
         Assert.assertEquals(songData.size(), 1);
         Assert.assertEquals(songData.get(0).getNote(), "R");
@@ -31,11 +31,11 @@ public class SongTransformerTest {
     }
 
     @Test
-    public void testTransformToSongWhenSongIsOneBasicNote() {
+    public void testFillSongDataFromRawDataWhenSongIsOneBasicNote() {
         //GIVEN
         String rawSong = "C 4";
         // WHEN
-        underTest.transformToSong(songData, rawSong);
+        underTest.fillSongDataFromRawData(songData, rawSong);
         // THEN
         Assert.assertEquals(songData.size(), 1);
         Assert.assertEquals(songData.get(0).getNote(), "C");
@@ -44,11 +44,11 @@ public class SongTransformerTest {
     }
 
     @Test
-    public void testTransformToSongWhenSongIsOneBasicNoteWithSimpleLowerModifier() {
+    public void testFillSongDataFromRawDataWhenSongIsOneBasicNoteWithSimpleLowerModifier() {
         //GIVEN
         String rawSong = "Cb 2";
         // WHEN
-        underTest.transformToSong(songData, rawSong);
+        underTest.fillSongDataFromRawData(songData, rawSong);
         // THEN
         Assert.assertEquals(songData.size(), 1);
         Assert.assertEquals(songData.get(0).getNote(), "Cb");
@@ -57,11 +57,11 @@ public class SongTransformerTest {
     }
 
     @Test
-    public void testTransformToSongWhenSongIsOneBasicNoteWithSimpleUpperModifier() {
+    public void testFillSongDataFromRawDataWhenSongIsOneBasicNoteWithSimpleUpperModifier() {
         //GIVEN
         String rawSong = "C# 2";
         // WHEN
-        underTest.transformToSong(songData, rawSong);
+        underTest.fillSongDataFromRawData(songData, rawSong);
         // THEN
         Assert.assertEquals(songData.size(), 1);
         Assert.assertEquals(songData.get(0).getNote(), "C#");
@@ -70,11 +70,11 @@ public class SongTransformerTest {
     }
 
     @Test
-    public void testTransformToSongWhenSongIsOneBasicNoteWithOctaveModifier() {
+    public void testFillSongDataFromRawDataWhenSongIsOneBasicNoteWithOctaveModifier() {
         //GIVEN
         String rawSong = "C/1 1";
         // WHEN
-        underTest.transformToSong(songData, rawSong);
+        underTest.fillSongDataFromRawData(songData, rawSong);
         // THEN
         Assert.assertEquals(songData.size(), 1);
         Assert.assertEquals(songData.get(0).getNote(), "C/1");
@@ -83,11 +83,11 @@ public class SongTransformerTest {
     }
 
     @Test
-    public void testTransformToSongWhenSongIsOneBasicNoteWithOctaveAndSimpleModifier() {
+    public void testFillSongDataFromRawDataWhenSongIsOneBasicNoteWithOctaveAndSimpleModifier() {
         //GIVEN
         String rawSong = "Cb/-1 1";
         // WHEN
-        underTest.transformToSong(songData, rawSong);
+        underTest.fillSongDataFromRawData(songData, rawSong);
         // THEN
         Assert.assertEquals(songData.size(), 1);
         Assert.assertEquals(songData.get(0).getNote(), "Cb/-1");
