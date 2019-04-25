@@ -19,16 +19,15 @@ public class PlayCommand implements Command {
     private final ConcurrentMap<Long, Song> playList;
     private final SongTransformer songTransformer;
 
-    PlayCommand(final String[] arguments, final ConcurrentMap<String, Song> songStore,
-        final ConcurrentMap<Long, Song> playList, final Long songId, final SongTransformer songTransformer) {
+    private PlayCommand(PlayCommandBuilder builder) {
         this.commandType = CommandType.PLAY;
-        this.tempo = Integer.parseInt(arguments[1]);
-        this.noteModifierFactor = Integer.parseInt(arguments[2]);
-        this.title = arguments[3];
-        this.songId = songId;
-        this.songStore = songStore;
-        this.playList = playList;
-        this.songTransformer = songTransformer;
+        this.tempo = builder.tempo;
+        this.noteModifierFactor = builder.noteModifierFactor;
+        this.title = builder.title;
+        this.songId = builder.songId;
+        this.songStore = builder.songStore;
+        this.playList = builder.playList;
+        this.songTransformer = builder.songTransformer;
     }
 
     @Override
@@ -47,5 +46,57 @@ public class PlayCommand implements Command {
             message = MessageFormat.format(RESULT_MESSAGE, songId);
         }
         return Result.createResult(song, message);
+    }
+
+    static class PlayCommandBuilder {
+        private int tempo;
+        private int noteModifierFactor;
+        private String title;
+        private Long songId;
+        private ConcurrentMap<String, Song> songStore;
+        private ConcurrentMap<Long, Song> playList;
+        private SongTransformer songTransformer;
+
+        PlayCommandBuilder() {
+        }
+
+        PlayCommand build() {
+            return new PlayCommand(this);
+        }
+
+        PlayCommandBuilder withTempo(final int tempo) {
+            this.tempo = tempo;
+            return this;
+        }
+
+        PlayCommandBuilder withNoteModifier(final int noteModifierFactor) {
+            this.noteModifierFactor = noteModifierFactor;
+            return this;
+        }
+
+        PlayCommandBuilder withTitle(final String title) {
+            this.title = title;
+            return this;
+        }
+
+        PlayCommandBuilder withSongId(final Long songId) {
+            this.songId = songId;
+            return this;
+        }
+
+        PlayCommandBuilder withSongStore(final ConcurrentMap<String, Song> songStore) {
+            this.songStore = songStore;
+            return this;
+        }
+
+        PlayCommandBuilder withPlayList(final ConcurrentMap<Long, Song> playList) {
+            this.playList = playList;
+            return this;
+        }
+
+        PlayCommandBuilder withSongTransformer(final SongTransformer songTransformer) {
+            this.songTransformer = songTransformer;
+            return this;
+        }
     }
 }

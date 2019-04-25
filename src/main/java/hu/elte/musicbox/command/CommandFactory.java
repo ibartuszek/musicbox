@@ -58,7 +58,15 @@ public class CommandFactory {
         } else if (commandType.equals(CommandType.ADD_LYRICS)) {
             command = new AddLyricsCommand(commandArguments[1], clientInput.get(1), lyricsTransformer, songStore);
         } else if (commandType.equals(CommandType.PLAY)) {
-            command = new PlayCommand(commandArguments, songStore, playList, songId.incrementAndGet(), songTransformer);
+            command = new PlayCommand.PlayCommandBuilder()
+                .withSongId(songId.incrementAndGet())
+                .withTitle(commandArguments[3])
+                .withTempo(Integer.parseInt(commandArguments[1]))
+                .withNoteModifier(Integer.parseInt(commandArguments[2]))
+                .withSongStore(songStore)
+                .withPlayList(playList)
+                .withSongTransformer(songTransformer)
+                .build();
         } else if (commandType.equals(CommandType.CHANGE)) {
             command = new ChangeCommand(commandArguments, playList, songTransformer);
         } else if (commandType.equals(CommandType.STOP)) {
