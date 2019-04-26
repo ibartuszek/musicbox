@@ -29,6 +29,6 @@ public class StopCommand implements Command {
             song = playList.remove(songId);
             message = END_MESSAGE;
         }
-        return Result.createResult(song, message);
+        return Result.createResult(song, message, commandType);
     }
 }

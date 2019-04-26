@@ -35,6 +35,6 @@ public class AddLyricsCommand implements Command {
             song.getLyricsData().clear();
             lyricsTransformer.fillLyricsDataFromRawData(song, rawLyrics);
         }
-        return Result.createResult(song, null);
+        return Result.createResult(song, null, commandType);
     }
 }

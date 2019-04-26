@@ -35,12 +35,12 @@ public class AddSongCommand implements Command {
             song.getSongData().clear();
         } else {
             synchronized (songStore) {
-                song = Song.createSong((long) songStore.size(), title);
+                song = Song.createSong((long) songStore.size() + 1, title);
                 songStore.put(song.getTitle(), song);
             }
         }
         songTransformer.fillSongDataFromRawData(song.getSongData(), rawSong);
-        return Result.createResult(song, null);
+        return Result.createResult(song, null, commandType);
     }
 
 }

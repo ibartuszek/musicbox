@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class SongTransformer {
 
-    public static final int TIME_BEAT_CONSTANT = 8;
+    private static final int TIME_BEAT_CONSTANT = 8;
     private static final String RAW_SONG_SEPARATOR = " ";
     private static final String END_SONG = "END_SONG";
     private static final String REPEAT = "REP";

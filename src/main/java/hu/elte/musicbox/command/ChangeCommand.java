@@ -32,7 +32,7 @@ public class ChangeCommand implements Command {
             song = playList.get(songId);
             songTransformer.updateSongData(song.getSongData(), tempo, noteModifierFactor);
         }
-        return Result.createResult(song, null);
+        return Result.createResult(song, null, commandType);
     }
 
     static class ChangeCommandBuilder {

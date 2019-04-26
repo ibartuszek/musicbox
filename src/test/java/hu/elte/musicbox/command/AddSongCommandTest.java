@@ -18,7 +18,7 @@ public class AddSongCommandTest {
     private static final String ADD = "add";
     private static final String SPACE = " ";
     private static final String SONG_TITLE = "song";
-    private static final Long FIRST_SONG_ID = 0L;
+    private static final Long FIRST_SONG_ID = 1L;
     private final SongTransformer songTransformer = SongTransformer.createSongTransformer();
     private final CommandFactory commandFactory = CommandFactory.createCommandFactory(songTransformer, null, null);
     private List<String> clientInput;

@@ -45,7 +45,7 @@ public class PlayCommand implements Command {
             playList.put(songId, song);
             message = MessageFormat.format(RESULT_MESSAGE, songId);
         }
-        return Result.createResult(song, message);
+        return Result.createResult(song, message, commandType);
     }
 
     static class PlayCommandBuilder {
