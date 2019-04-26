@@ -24,6 +24,7 @@ public class AddLyricsCommandTest {
     private ConcurrentMap<String, Song> songStore;
     private List<String> clientInput;
     private Song song;
+
     private AddLyricsCommand underTest;
 
     @BeforeMethod

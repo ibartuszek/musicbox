@@ -68,10 +68,15 @@ public class CommandFactory {
                 .withSongTransformer(songTransformer)
                 .build();
         } else if (commandType.equals(CommandType.CHANGE)) {
-            command = new ChangeCommand(commandArguments, playList, songTransformer);
+            command = new ChangeCommand.ChangeCommandBuilder()
+                .withSongId(Long.parseLong(commandArguments[1]))
+                .withTempo(Integer.parseInt(commandArguments[2]))
+                .withNoteModifier(commandArguments.length > 3 ? Integer.parseInt(commandArguments[3]) : 0)
+                .withPlayList(playList)
+                .withSongTransformer(songTransformer)
+                .build();
         } else if (commandType.equals(CommandType.STOP)) {
-            // TODO
-            System.out.println(CommandType.STOP);
+            command = new StopCommand(Long.parseLong(commandArguments[1]), playList);
         }
 
         return command;

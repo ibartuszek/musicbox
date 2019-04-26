@@ -22,22 +22,21 @@ public class ChangeCommandTest {
     private static final String SONG_TITLE = "title";
     private static final String TEMPO = "100";
     private static final String NOTE_MODIFIER = "20";
-    private final List<String> clientInput;
+    private List<String> clientInput;
     private CommandFactory commandFactory;
     private ConcurrentMap<Long, Song> playList;
     private Song song;
     private Song transformattedSong;
-    private ChangeCommand underTest;
 
-    public ChangeCommandTest() {
-        clientInput = new ArrayList<>();
-    }
+    private ChangeCommand underTest;
 
     @BeforeMethod
     public void setUp() {
         AtomicLong songIdCounter = new AtomicLong();
         SongTransformer songTransformer = SongTransformer.createSongTransformer();
         commandFactory = CommandFactory.createCommandFactory(songTransformer, null, songIdCounter);
+
+        clientInput = new ArrayList<>();
 
         playList = new ConcurrentHashMap<>();
         song = Song.createSong(SONG_ID, SONG_TITLE);

@@ -20,6 +20,7 @@ public class ClientData implements AutoCloseable {
         printWriter = new PrintWriter(socket.getOutputStream());
     }
 
+    @Override
     public void close() throws Exception {
         if (socket == null) {
             return;

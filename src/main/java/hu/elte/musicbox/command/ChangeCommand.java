@@ -14,13 +14,13 @@ public class ChangeCommand implements Command {
     private final ConcurrentMap<Long, Song> playList;
     private final SongTransformer songTransformer;
 
-    ChangeCommand(final String[] arguments, final ConcurrentMap<Long, Song> playList, final SongTransformer songTransformer) {
+    private ChangeCommand(ChangeCommandBuilder builder) {
         this.commandType = CommandType.CHANGE;
-        this.songId = Long.parseLong(arguments[1]);
-        this.tempo = Integer.parseInt(arguments[2]);
-        this.noteModifierFactor = arguments[3] != null ? Integer.parseInt(arguments[3]) : 0;
-        this.playList = playList;
-        this.songTransformer = songTransformer;
+        this.songId = builder.songId;
+        this.tempo = builder.tempo;
+        this.noteModifierFactor = builder.noteModifierFactor;
+        this.playList = builder.playList;
+        this.songTransformer = builder.songTransformer;
     }
 
     @Override
@@ -33,5 +33,46 @@ public class ChangeCommand implements Command {
             songTransformer.updateSongData(song.getSongData(), tempo, noteModifierFactor);
         }
         return Result.createResult(song, null);
+    }
+
+    static class ChangeCommandBuilder {
+        private Long songId;
+        private int tempo;
+        private int noteModifierFactor;
+        private ConcurrentMap<Long, Song> playList;
+        private SongTransformer songTransformer;
+
+        ChangeCommandBuilder() {
+        }
+
+        ChangeCommand build() {
+            return new ChangeCommand(this);
+        }
+
+        ChangeCommandBuilder withSongId(final Long songId) {
+            this.songId = songId;
+            return this;
+        }
+
+        ChangeCommandBuilder withTempo(final int tempo) {
+            this.tempo = tempo;
+            return this;
+        }
+
+        ChangeCommandBuilder withNoteModifier(final int noteModifierFactor) {
+            this.noteModifierFactor = noteModifierFactor;
+            return this;
+        }
+
+        ChangeCommandBuilder withPlayList(final ConcurrentMap<Long, Song> playList) {
+            this.playList = playList;
+            return this;
+        }
+
+        ChangeCommandBuilder withSongTransformer(final SongTransformer songTransformer) {
+            this.songTransformer = songTransformer;
+            return this;
+        }
+
     }
 }

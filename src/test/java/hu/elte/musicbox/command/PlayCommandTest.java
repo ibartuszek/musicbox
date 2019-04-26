@@ -30,6 +30,7 @@ public class PlayCommandTest {
     private ConcurrentMap<Long, Song> playList;
     private Song song;
     private Song transformattedSong;
+
     private PlayCommand underTest;
 
     @BeforeMethod
