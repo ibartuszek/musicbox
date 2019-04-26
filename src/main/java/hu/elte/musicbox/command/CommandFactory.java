@@ -73,6 +73,7 @@ public class CommandFactory {
                 .withSongId(Long.parseLong(commandArguments[1]))
                 .withTempo(Integer.parseInt(commandArguments[2]))
                 .withNoteModifier(commandArguments.length > 3 ? Integer.parseInt(commandArguments[3]) : 0)
+                .withSongStore(songStore)
                 .withPlayList(playList)
                 .withSongTransformer(songTransformer)
                 .build();

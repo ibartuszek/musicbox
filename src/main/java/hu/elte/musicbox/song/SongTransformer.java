@@ -104,19 +104,28 @@ public class SongTransformer {
         }
     }
 
-    public void updateSongData(final List<Note> newSongData, final int tempo, final int noteModifierFactor) {
+    public void updateSongData(final List<Note> newSongData, final float tempo, final int noteModifierFactor) {
         newSongData.forEach(note -> replaceNote(newSongData, note, tempo, noteModifierFactor));
     }
 
-    private void replaceNote(List<Note> newSongData, Note note, int tempo, int noteModifierFactor) {
+    private void replaceNote(List<Note> newSongData, Note note, float tempo, int noteModifierFactor) {
         newSongData.remove(note);
         newSongData.add(transformNote(note, tempo, noteModifierFactor));
     }
 
-    private Note transformNote(Note note, int tempo, int noteModifierFactor) {
-        int newBeat = note.getBeat() * tempo / TIME_BEAT_CONSTANT;
-        int newNoteValue = note.getNoteValue() + noteModifierFactor;
+    private Note transformNote(Note note, float tempo, int noteModifierFactor) {
+        int newBeat = (int) (note.getBeat() * tempo / TIME_BEAT_CONSTANT);
+        Integer newNoteValue = note.getNoteValue() != null ? note.getNoteValue() + noteModifierFactor : null;
         return Note.createNote(newNoteValue, newBeat, note.getNote());
     }
 
+    public float getCorrectedTempo(final Note original, final Note modified, final float newTempo) {
+        float originalTempo = (float) modified.getBeat() / (float) original.getBeat();
+        return newTempo / originalTempo;
+    }
+
+    public int getCorrectedNoteModifierFactor(final Note originalFirstNote, final Note modifiedFirstNote,
+        final int noteModifierFactor) {
+        return modifiedFirstNote.getNoteValue() - originalFirstNote.getNoteValue() + noteModifierFactor;
+    }
 }

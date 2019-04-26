@@ -16,15 +16,20 @@ import hu.elte.musicbox.song.SongTransformer;
 
 public class ChangeCommandTest {
 
+    public static final int NOTE_VALUE = 60;
+    public static final int BEAT = 4;
+    public static final String NOTE = "C";
     private static final long SONG_ID = 1L;
     private static final String SPACE = " ";
     private static final String CHANGE = "change";
     private static final String SONG_TITLE = "title";
-    private static final String TEMPO = "100";
-    private static final String NOTE_MODIFIER = "20";
+    private static final int TEMPO = 100;
+    private static final int NOTE_MODIFIER = 20;
     private List<String> clientInput;
     private CommandFactory commandFactory;
+    private ConcurrentMap<String, Song> songStore;
     private ConcurrentMap<Long, Song> playList;
+    private Note firstNote;
     private Song song;
     private Song transformattedSong;
 
@@ -38,9 +43,13 @@ public class ChangeCommandTest {
 
         clientInput = new ArrayList<>();
 
+        songStore = new ConcurrentHashMap<>();
         playList = new ConcurrentHashMap<>();
+
+        Note note = Note.createNote(NOTE_VALUE, BEAT, NOTE);
+
         song = Song.createSong(SONG_ID, SONG_TITLE);
-        song.getSongData().add(Note.createNote(60, 4, "C"));
+        song.getSongData().add(note);
         song.getSongData().add(Note.createNote(69, 2, "A"));
         song.getSongData().add(Note.createNote(69, 2, "A"));
     }
@@ -49,7 +58,7 @@ public class ChangeCommandTest {
     public void testExecuteShouldReturnEmptyResultWhenSongDoesNotExist() {
         // GIVEN
         clientInput.add(CHANGE + SPACE + SONG_ID + SPACE + TEMPO + SPACE + NOTE_MODIFIER);
-        underTest = (ChangeCommand) commandFactory.createCommand(clientInput, null, playList);
+        underTest = (ChangeCommand) commandFactory.createCommand(clientInput, songStore, playList);
         // WHEN
         Result result = underTest.execute();
         // THEN
@@ -60,35 +69,41 @@ public class ChangeCommandTest {
     @Test
     public void testExecuteShouldReturnABasicSongWhenSongExists() {
         // GIVEN
+        firstNote = Note.createNote(NOTE_VALUE + NOTE_MODIFIER, BEAT * TEMPO / 8, NOTE);
+        songStore.put(song.getTitle(), song);
         playList.put(song.getId(), song);
         transformattedSong = Song.createSong(SONG_ID, SONG_TITLE);
         transformattedSong.getSongData().add(Note.createNote(80, 50, "C"));
         transformattedSong.getSongData().add(Note.createNote(89, 25, "A"));
         transformattedSong.getSongData().add(Note.createNote(89, 25, "A"));
         clientInput.add(CHANGE + SPACE + SONG_ID + SPACE + TEMPO + SPACE + NOTE_MODIFIER);
-        underTest = (ChangeCommand) commandFactory.createCommand(clientInput, null, playList);
+        underTest = (ChangeCommand) commandFactory.createCommand(clientInput, songStore, playList);
         // WHEN
         Result result = underTest.execute();
         // THEN
         Assert.assertEquals(result.getSong(), transformattedSong);
         Assert.assertEquals(playList.size(), 1);
+        Assert.assertEquals(playList.get(SONG_ID).getSongData().get(0), firstNote);
     }
 
     @Test
     public void testExecuteShouldReturnABasicSongWhenSongExistsAndNoteModifierIsNull() {
         // GIVEN
+        firstNote = Note.createNote(NOTE_VALUE, BEAT * TEMPO / 8, NOTE);
+        songStore.put(song.getTitle(), song);
         playList.put(song.getId(), song);
         transformattedSong = Song.createSong(SONG_ID, SONG_TITLE);
         transformattedSong.getSongData().add(Note.createNote(60, 50, "C"));
         transformattedSong.getSongData().add(Note.createNote(69, 25, "A"));
         transformattedSong.getSongData().add(Note.createNote(69, 25, "A"));
         clientInput.add(CHANGE + SPACE + SONG_ID + SPACE + TEMPO);
-        underTest = (ChangeCommand) commandFactory.createCommand(clientInput, null, playList);
+        underTest = (ChangeCommand) commandFactory.createCommand(clientInput, songStore, playList);
         // WHEN
         Result result = underTest.execute();
         // THEN
         Assert.assertEquals(result.getSong(), transformattedSong);
         Assert.assertEquals(playList.size(), 1);
+        Assert.assertEquals(playList.get(SONG_ID).getSongData().get(0), firstNote);
     }
 
 }

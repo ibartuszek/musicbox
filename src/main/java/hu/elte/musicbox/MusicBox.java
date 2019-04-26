@@ -76,9 +76,6 @@ public class MusicBox {
             } else {
                 SongPlayer.sendEndMessage(client.getPrintWriter());
             }
-        } else {
-            client.getPrintWriter().println(result.getCommandType().getCommandName());
-            client.getPrintWriter().flush();
         }
     }
 
