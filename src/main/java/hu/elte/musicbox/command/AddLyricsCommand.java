@@ -13,13 +13,18 @@ public class AddLyricsCommand implements Command {
     private final LyricsTransformer lyricsTransformer;
     private final ConcurrentMap<String, Song> songStore;
 
-    AddLyricsCommand(final String title, final String rawLyrics, final LyricsTransformer lyricsTransformer,
+    private AddLyricsCommand(final String title, final String rawLyrics, final LyricsTransformer lyricsTransformer,
         final ConcurrentMap<String, Song> songStore) {
         this.commandType = CommandType.ADD_LYRICS;
         this.title = title;
         this.rawLyrics = rawLyrics;
         this.lyricsTransformer = lyricsTransformer;
         this.songStore = songStore;
+    }
+
+    static AddLyricsCommand createAddLyricsCommand(final String title, final String rawLyrics, final LyricsTransformer lyricsTransformer,
+        final ConcurrentMap<String, Song> songStore) {
+        return new AddLyricsCommand(title, rawLyrics, lyricsTransformer, songStore);
     }
 
     @Override

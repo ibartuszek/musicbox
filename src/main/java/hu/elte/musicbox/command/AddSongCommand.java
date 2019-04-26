@@ -13,13 +13,18 @@ public class AddSongCommand implements Command {
     private final SongTransformer songTransformer;
     private final ConcurrentMap<String, Song> songStore;
 
-    AddSongCommand(final String title, final String rawSong, final SongTransformer songTransformer,
+    private AddSongCommand(final String title, final String rawSong, final SongTransformer songTransformer,
         final ConcurrentMap<String, Song> songStore) {
         this.commandType = CommandType.ADD;
         this.title = title;
         this.rawSong = rawSong;
         this.songTransformer = songTransformer;
         this.songStore = songStore;
+    }
+
+    static AddSongCommand createAddSongCommand(final String title, final String rawSong, final SongTransformer songTransformer,
+        final ConcurrentMap<String, Song> songStore) {
+        return new AddSongCommand(title, rawSong, songTransformer, songStore);
     }
 
     @Override

@@ -11,10 +11,14 @@ public class StopCommand implements Command {
     private final Long songId;
     private final ConcurrentMap<Long, Song> playList;
 
-    StopCommand(final Long songId, final ConcurrentMap<Long, Song> playList) {
+    private StopCommand(final Long songId, final ConcurrentMap<Long, Song> playList) {
         this.commandType = CommandType.STOP;
         this.songId = songId;
         this.playList = playList;
+    }
+
+    static StopCommand createStopCommand(final Long songId, final ConcurrentMap<Long, Song> playList) {
+        return new StopCommand(songId, playList);
     }
 
     @Override

@@ -54,9 +54,10 @@ public class CommandFactory {
         Command command = null;
 
         if (commandType.equals(CommandType.ADD)) {
-            command = new AddSongCommand(commandArguments[1], clientInput.get(1), songTransformer, songStore);
+            command = AddSongCommand.createAddSongCommand(commandArguments[1], clientInput.get(1), songTransformer, songStore);
         } else if (commandType.equals(CommandType.ADD_LYRICS)) {
-            command = new AddLyricsCommand(commandArguments[1], clientInput.get(1), lyricsTransformer, songStore);
+            command = AddLyricsCommand.createAddLyricsCommand(commandArguments[1], clientInput.get(1), lyricsTransformer,
+                songStore);
         } else if (commandType.equals(CommandType.PLAY)) {
             command = new PlayCommand.PlayCommandBuilder()
                 .withSongId(songId.incrementAndGet())
@@ -76,7 +77,7 @@ public class CommandFactory {
                 .withSongTransformer(songTransformer)
                 .build();
         } else if (commandType.equals(CommandType.STOP)) {
-            command = new StopCommand(Long.parseLong(commandArguments[1]), playList);
+            command = StopCommand.createStopCommand(Long.parseLong(commandArguments[1]), playList);
         }
 
         return command;
