@@ -13,7 +13,7 @@ import hu.elte.musicbox.song.Song;
 
 public class SongPlayer {
 
-    public static final int START_SLEEP = 500;
+    private static final int START_SLEEP = 500;
     private static final String SPACE = " ";
     private static final String UNKNOWN_LYRICS_FRAGMENT = "???";
     private static final String END_SONG = "FIN";

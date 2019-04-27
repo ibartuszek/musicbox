@@ -31,7 +31,7 @@ public class MusicBox {
         CommandFactory commandFactory = CommandFactory.createCommandFactory(songTransformer, lyricsTransformer, songId);
 
         // For test only:
-        initSongStore(commandFactory, songStore);
+        // initSongStore(commandFactory, songStore);
 
         try (final ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {

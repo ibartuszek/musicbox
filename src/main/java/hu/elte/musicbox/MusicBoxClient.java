@@ -9,15 +9,12 @@ import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Synthesizer;
 
-import lombok.Data;
-
-@Data
 public class MusicBoxClient implements AutoCloseable {
 
-    private Socket socket;
-    private Scanner scanner;
-    private MidiChannel channel;
-    private PrintWriter printWriter;
+    private final Socket socket;
+    private final Scanner scanner;
+    private final MidiChannel channel;
+    private final PrintWriter printWriter;
 
     MusicBoxClient(ServerSocket serverSocket) throws Exception {
         socket = serverSocket.accept();
@@ -36,4 +33,19 @@ public class MusicBoxClient implements AutoCloseable {
         socket.close();
     }
 
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public Scanner getScanner() {
+        return scanner;
+    }
+
+    public MidiChannel getChannel() {
+        return channel;
+    }
+
+    public PrintWriter getPrintWriter() {
+        return printWriter;
+    }
 }
