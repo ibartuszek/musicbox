@@ -101,17 +101,17 @@ public class SongTransformerTest {
         songData.add(Note.createNote(60, 4, "C"));
         songData.add(Note.createNote(69, 2, "A"));
         songData.add(Note.createNote(69, 2, "A"));
-        List<Note> transformattedSongData = new CopyOnWriteArrayList<>();
-        transformattedSongData.add(Note.createNote(80, 50, "G#/1"));
-        transformattedSongData.add(Note.createNote(89, 25, "F/2"));
-        transformattedSongData.add(Note.createNote(89, 25, "F/2"));
+        List<Note> modifiedSongData = new CopyOnWriteArrayList<>();
+        modifiedSongData.add(Note.createNote(80, 50, "G#/1"));
+        modifiedSongData.add(Note.createNote(89, 25, "F/2"));
+        modifiedSongData.add(Note.createNote(89, 25, "F/2"));
         // WHEN
         underTest.updateSongData(songData, 100, 20);
         // THEN
         Assert.assertEquals(songData.size(), 3);
-        Assert.assertEquals(songData.get(0), transformattedSongData.get(0));
-        Assert.assertEquals(songData.get(1), transformattedSongData.get(1));
-        Assert.assertEquals(songData.get(2), transformattedSongData.get(2));
+        Assert.assertEquals(songData.get(0), modifiedSongData.get(0));
+        Assert.assertEquals(songData.get(1), modifiedSongData.get(1));
+        Assert.assertEquals(songData.get(2), modifiedSongData.get(2));
     }
 
 }
