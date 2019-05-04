@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Public responsibility is to transform a raw String to a Song, which has a List of Notes.
@@ -14,6 +15,7 @@ import java.util.Map;
 public class SongTransformer {
 
     private static final int TIME_BEAT_CONSTANT = 8;
+    private static final String EMPTY_STRING = "";
     private static final String RAW_SONG_SEPARATOR = " ";
     private static final String END_SONG = "END_SONG";
     private static final String REPEAT = "REP";
@@ -77,12 +79,17 @@ public class SongTransformer {
         songData.add(note);
     }
 
+    // NoteTransformer
     private Note transformToNote(final String noteElement, final Integer tempo) {
+        return Note.createNote(calculateNoteValue(noteElement), tempo, noteElement);
+    }
+
+    public Integer calculateNoteValue(final String noteElement) {
         String[] elements = noteElement.split(OCTAVE_SEPARATOR);
         Character aimNote = elements[0].charAt(0);
         int targetValue = noteCodeTable.get(aimNote);
         int modifier = createNoteModifiers(elements);
-        return Note.createNote(targetValue + modifier, tempo, noteElement);
+        return targetValue + modifier;
     }
 
     private int createNoteModifiers(final String[] elements) {
@@ -116,7 +123,51 @@ public class SongTransformer {
     private Note transformNote(Note note, float tempo, int noteModifierFactor) {
         int newBeat = (int) (note.getBeat() * tempo / TIME_BEAT_CONSTANT);
         Integer newNoteValue = note.getNoteValue() != null ? note.getNoteValue() + noteModifierFactor : null;
-        return Note.createNote(newNoteValue, newBeat, note.getNote());
+        return Note.createNote(newNoteValue, newBeat, getModifiedNoteCharacter(newNoteValue));
+    }
+
+    private String getModifiedNoteCharacter(final Integer newNoteValue) {
+        int value = newNoteValue;
+
+        int octaveModifier = calculateOctaveModifier(newNoteValue);
+        value -= octaveModifier * OCTAVE_SHIFT;
+
+        int noteBasicModifier = calculateNoteBasicModifier(value);
+        value -= noteBasicModifier;
+
+        return getNoteWithoutModifier(value) + getNoteModifiers(noteBasicModifier, octaveModifier);
+    }
+
+    private Character getNoteWithoutModifier(final int value) {
+        Optional<Character> optionalValue = noteCodeTable.entrySet().stream()
+            .filter(e -> value == e.getValue())
+            .map(Map.Entry::getKey)
+            .findFirst();
+        return optionalValue.orElse(null);
+    }
+
+    private int calculateOctaveModifier(final int newNoteValue) {
+        int octaveModifier = 0;
+        int value = newNoteValue;
+        while (value < 60 || value > 71) {
+            if (newNoteValue < 60) {
+                value += OCTAVE_SHIFT;
+                octaveModifier--;
+            } else {
+                value -= OCTAVE_SHIFT;
+                octaveModifier++;
+            }
+        }
+        return octaveModifier;
+    }
+
+    private int calculateNoteBasicModifier(final int newNoteValue) {
+        return noteCodeTable.containsValue(newNoteValue) ? 0 : 1;
+    }
+
+    private String getNoteModifiers(final int noteBasicModifier, final int octaveModifier) {
+        return (noteBasicModifier != 0 ? NOTE_MODIFIER_TO_UPPER : EMPTY_STRING)
+            + (octaveModifier != 0 ? OCTAVE_SEPARATOR + octaveModifier : EMPTY_STRING);
     }
 
     public float getCorrectedTempo(final Note original, final Note modified, final float newTempo) {
@@ -128,4 +179,5 @@ public class SongTransformer {
         final int noteModifierFactor) {
         return modifiedFirstNote.getNoteValue() - originalFirstNote.getNoteValue() + noteModifierFactor;
     }
+
 }

@@ -102,9 +102,9 @@ public class SongTransformerTest {
         songData.add(Note.createNote(69, 2, "A"));
         songData.add(Note.createNote(69, 2, "A"));
         List<Note> transformattedSongData = new CopyOnWriteArrayList<>();
-        transformattedSongData.add(Note.createNote(80, 50, "C"));
-        transformattedSongData.add(Note.createNote(89, 25, "A"));
-        transformattedSongData.add(Note.createNote(89, 25, "A"));
+        transformattedSongData.add(Note.createNote(80, 50, "G#/1"));
+        transformattedSongData.add(Note.createNote(89, 25, "F/2"));
+        transformattedSongData.add(Note.createNote(89, 25, "F/2"));
         // WHEN
         underTest.updateSongData(songData, 100, 20);
         // THEN

@@ -19,6 +19,7 @@ public class ChangeCommandTest {
     public static final int NOTE_VALUE = 60;
     public static final int BEAT = 4;
     public static final String NOTE = "C";
+    public static final String MODIFIED_NOTE = "G#/1";
     private static final long SONG_ID = 1L;
     private static final String SPACE = " ";
     private static final String CHANGE = "change";
@@ -69,7 +70,7 @@ public class ChangeCommandTest {
     @Test
     public void testExecuteShouldReturnABasicSongWhenSongExists() {
         // GIVEN
-        firstNote = Note.createNote(NOTE_VALUE + NOTE_MODIFIER, BEAT * TEMPO / 8, NOTE);
+        firstNote = Note.createNote(NOTE_VALUE + NOTE_MODIFIER, BEAT * TEMPO / 8, MODIFIED_NOTE);
         songStore.put(song.getTitle(), song);
         playList.put(song.getId(), song);
         transformattedSong = Song.createSong(SONG_ID, SONG_TITLE);
