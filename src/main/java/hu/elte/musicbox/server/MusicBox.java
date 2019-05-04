@@ -1,4 +1,4 @@
-package hu.elte.musicbox;
+package hu.elte.musicbox.server;
 
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class MusicBox {
         CommandFactory commandFactory = CommandFactory.createCommandFactory(songTransformer, lyricsTransformer, songId);
 
         // For test only:
-        // initSongStore(commandFactory, songStore);
+        initSongStore(commandFactory, songStore);
 
         try (final ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {
@@ -41,12 +41,14 @@ public class MusicBox {
                 }
                 new Thread(() -> {
                     List<String> clientInput = new ArrayList<>();
-                    while (client.getScanner().hasNextLine()) {
+                    boolean finished = false;
+                    while (!finished) {
                         String line = client.getScanner().nextLine();
                         clientInput.add(line);
                         if (commandFactory.isReady(clientInput)) {
                             Result result = commandFactory.createCommand(clientInput, songStore, playList).execute();
                             sendAnswerToClient(client, result, songStore, playList);
+                            finished = true;
                         }
                     }
                     synchronized (otherClients) {
@@ -88,7 +90,7 @@ public class MusicBox {
         input.clear();
 
         input.add("addlyrics sample");
-        input.add("bo ci bo ci tar ka se fü le se far ka o da me gyünk lak ni a hol te jet kap ni");
+        input.add("bo ci bo ci tar ka se fu le se far ka o da me gyunk lak ni a hol te jet kap ni");
         commandFactory.createCommand(input, songStore, null).execute();
         input.clear();
 

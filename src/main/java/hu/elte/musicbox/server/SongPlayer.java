@@ -1,11 +1,9 @@
-package hu.elte.musicbox;
+package hu.elte.musicbox.server;
 
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
-
-import javax.sound.midi.MidiChannel;
 
 import hu.elte.musicbox.command.Result;
 import hu.elte.musicbox.song.Note;
@@ -17,10 +15,9 @@ public class SongPlayer {
     private static final String SPACE = " ";
     private static final String UNKNOWN_LYRICS_FRAGMENT = "???";
     private static final String END_SONG = "FIN";
-    private static final String START_MESSAGE = "start";
+    private static final String START_MESSAGE = "playing";
 
     private final PrintWriter printWriter;
-    private final MidiChannel midiChannel;
     private final Long songId;
     private final String songTitle;
     private final ConcurrentMap<String, Song> songStore;
@@ -29,7 +26,6 @@ public class SongPlayer {
     private SongPlayer(final SongPlayerBuilder songPlayerBuilder) {
         MusicBoxClient musicBoxClient = songPlayerBuilder.musicBoxClient;
         this.printWriter = musicBoxClient.getPrintWriter();
-        this.midiChannel = musicBoxClient.getChannel();
         Result result = songPlayerBuilder.result;
         this.songStore = songPlayerBuilder.songStore;
         this.playList = songPlayerBuilder.playList;
@@ -43,17 +39,17 @@ public class SongPlayer {
     }
 
     void playSong() {
-        sendStartMessage();
         List<Note> songData = getSongData(songId);
+        sendStartMessage();
+        pause(START_SLEEP);
         int noteIndex = 0;
         while (noteIndex < songData.size()) {
             Note note = songData.get(noteIndex);
             String lyricsFragment = getNextLyricsFragment(songTitle, songStore, noteIndex);
             if (note.getNoteValue() != null) {
                 playNote(note, lyricsFragment);
-            } else {
-                pause(note.getBeat());
             }
+            pause(note.getBeat());
             songData = getSongData(songId);
             noteIndex++;
         }
@@ -79,9 +75,6 @@ public class SongPlayer {
     private void playNote(final Note note, final String lyricsFragment) {
         printWriter.print(createMessage(note, lyricsFragment));
         printWriter.flush();
-        midiChannel.noteOn(note.getNoteValue(), note.getBeat());
-        pause(note.getBeat());
-        midiChannel.noteOff(note.getNoteValue(), note.getBeat());
     }
 
     private void pause(final Integer beat) {
@@ -105,7 +98,6 @@ public class SongPlayer {
     private void sendStartMessage() {
         printWriter.println(START_MESSAGE + SPACE + songId);
         printWriter.flush();
-        pause(START_SLEEP);
     }
 
     private void sendEndMessage() {

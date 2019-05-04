@@ -78,8 +78,14 @@ public class SongTransformer {
 
     private Note transformNote(Note note, float tempo, int noteModifierFactor) {
         int newBeat = (int) (note.getBeat() * tempo / TIME_BEAT_CONSTANT);
-        Integer newNoteValue = note.getNoteValue() != null ? note.getNoteValue() + noteModifierFactor : null;
-        return Note.createNote(newNoteValue, newBeat, noteTransformer.getModifiedNoteCharacter(newNoteValue));
+        Note newNote;
+        if (PAUSE.equals(note.getNote())) {
+            newNote = Note.createNote(null, newBeat, PAUSE);
+        } else {
+            Integer newNoteValue = note.getNoteValue() + noteModifierFactor;
+            newNote = Note.createNote(newNoteValue, newBeat, noteTransformer.getModifiedNoteCharacter(newNoteValue));
+        }
+        return newNote;
     }
 
     public float getCorrectedTempo(final Note original, final Note modified, final float newTempo) {
